@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 export const colors = {
@@ -33,34 +33,44 @@ export const colors = {
   accent: '#0a6b64',
 };
 
-const Styles= StyleSheet.create({
-    container: {flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        },
-    logo:{
-        width: 120,
-        height: 120,
-        resizeMode: 'cover'
-    },
-    title:{
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        fontStyle: 'italic',
-        color: colors.primary,
-        shadowColor: colors.primaryBorder,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
-    },
-    bgImage:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: width,
-        
-    }
+const Styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: 'cover',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    fontStyle: 'italic',
+    color: colors.primary,
+    textShadowColor: colors.primaryBorder, // Utilisation de textShadow pour une meilleure compatibilité
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    elevation: 5,
+  },
+  bgImage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: width,
+  },
+  bottomTitle: {
+    fontSize: 14,
+    fontWeight: '600', // Un peu plus lisible que 'light'
+    color: colors.white, // Couleur plus visible sur l'image de fond
+    textShadowColor: colors.black,
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  bottomContainer: {
+    position: 'absolute',
+    bottom: 40,
+    width: '100%', // Pour s'assurer que le centrage fonctionne
+    alignItems: 'center',
+    paddingBottom: 20, // Espace par rapport au bas
+  },
 });
 export default Styles;

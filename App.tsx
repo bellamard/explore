@@ -12,11 +12,9 @@ import MainRoutes from './src/routes/MainRoutes';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
-
 const App = () => {
-  
   return (
-    <SafeAreaProvider   
+    <SafeAreaProvider      
     >
     <NavigationContainer>
        <StatusBar hidden={true} />

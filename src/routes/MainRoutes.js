@@ -17,7 +17,7 @@ const MainRoutes = () => {
       />
       <Stack.Screen
         name="Login"
-        component={Launch}
+        component={Login}
         options={{ headerShown: false }}
       />
       <Stack.Screen
