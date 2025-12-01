@@ -20,7 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import StylesLogin from '../styles/login';
 import Styles, { colors } from '../styles';
 import LinearGradient from 'react-native-linear-gradient';
-import OTPInput from '../components/OTPInput';
+import OTPInput from '../components/OTPinput';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
