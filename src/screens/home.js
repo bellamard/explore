@@ -11,6 +11,7 @@ import Styles from '../styles/home';
 import Headers from '../components/header';
 import CategoryCard from '../components/category';
 import Banner from '../components/banner';
+import CardItem from '../components/cardItem';
 
 const { width } = Dimensions.get('window');
 const BANNER_WIDTH = width * 0.85 + 20;
@@ -104,6 +105,39 @@ const bannerData = [
   },
 ];
 
+const itemEvents = [
+  {
+    id: 'e1',
+    title: 'Excursion à la Montagne Bleue et randonnée',
+    image: 'https://picsum.photos/100/100?random=11',
+    rating: 4.8,
+    location: 'Chamonix, France',
+    price: 187,
+    onPress: () => console.log('Hôtel Chamonix Pressed'),
+    onFavoritePress: () => console.log('Toggle Favorite Chamonix'), // Action pour le cœur
+  },
+  {
+    id: 'e2',
+    title: 'Dégustation de vins fins régionaux',
+    image: 'https://picsum.photos/100/100?random=22',
+    rating: 4.5,
+    location: 'Bordeaux, France',
+    price: 120,
+    onPress: () => console.log('Hôtel Bordeaux Pressed'),
+    onFavoritePress: () => console.log('Toggle Favorite Bordeaux'),
+  },
+  {
+    id: 'e3',
+    title: 'Visite guidée du musée d’art moderne',
+    image: 'https://picsum.photos/100/100?random=33',
+    rating: 4.9,
+    location: 'Paris, France',
+    price: 250,
+    onPress: () => console.log('Hôtel Paris Pressed'),
+    onFavoritePress: () => console.log('Toggle Favorite Paris'),
+  },
+];
+
 const categories = categoriesData => {
   return (
     <View>
@@ -190,6 +224,36 @@ const BannersCarousel = ({ data }) => {
   );
 };
 
+const EventsList = ({ items }) => {
+  return (
+    <FlatList
+      data={items}
+      renderItem={({ item }) => <CardItem item={item} />}
+      keyExtractor={item => item.id}
+      showsVerticalScrollIndicator={false}
+    />
+  );
+};
+
+const Container = () => {
+  return (
+    <View style={Styles.container}>
+      {categories(categoriesItem)}
+      <View style={Styles.section}>
+        <Text style={Styles.welcomeText}>Recommandation</Text>
+        <View style={Styles.line} />
+        <BannersCarousel data={bannerData} />
+      </View>
+
+      <View style={Styles.section}>
+        <Text style={Styles.sectionTitle}>Evenements</Text>
+        <View style={Styles.line} />
+        <EventsList items={itemEvents} />
+      </View>
+    </View>
+  );
+};
+
 const Home = () => {
   return (
     <View>
@@ -202,13 +266,7 @@ const Home = () => {
         onSearchPress={() => console.log('Search Pressed')}
         onNotificationPress={() => console.log('Notification Pressed')}
       />
-      <View style={Styles.container}>
-        {categories(categoriesItem)}
-        <View>
-          <Text style={Styles.welcomeText}>Recommandation</Text>
-          <BannersCarousel data={bannerData} />
-        </View>
-      </View>
+      <Container />
     </View>
   );
 };
