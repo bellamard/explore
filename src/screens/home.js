@@ -1,20 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  FlatList,
-  Dimensions,
-  Animated,
-} from 'react-native';
+import React from 'react';
+import { View, FlatList, Text, Dimensions } from 'react-native';
 import Styles from '../styles/home';
 import Headers from '../components/header';
 import CategoryCard from '../components/category';
 import Banner from '../components/banner';
 import CardItem from '../components/cardItem';
+import CardSiteItem from '../components/cardSite';
+const { height } = Dimensions.get('window');
 
-const { width } = Dimensions.get('window');
-const BANNER_WIDTH = width * 0.85 + 20;
 const categoriesItem = [
   {
     id: 1,
@@ -138,137 +131,140 @@ const itemEvents = [
   },
 ];
 
-const categories = categoriesData => {
-  return (
-    <View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={Styles.categoryCard}>
-          {categoriesData.map(data => (
-            <CategoryCard key={data.id} {...data} />
-          ))}
-        </View>
-      </ScrollView>
-    </View>
-  );
-};
+const siteData = [
+  {
+    id: 's1',
+    name: 'Eiffel Tower',
+    image: 'https://picsum.photos/200/300?random=1',
+    address: { town: 'Paris' },
+    rating: 4.7,
+  },
+  {
+    id: 's2',
+    name: 'Louvre Museum',
+    image: 'https://picsum.photos/200/300?random=2',
+    address: { town: 'Paris' },
+    rating: 4.8,
+  },
+  {
+    id: 's3',
+    name: 'Notre-Dame Cathedral',
+    image: 'https://picsum.photos/200/300?random=3',
+    address: { town: 'Paris' },
+    rating: 4.6,
+  },
+];
 
-const BannersCarousel = ({ data }) => {
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    { useNativeDriver: false },
-  );
-
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
-    if (viewableItems.length > 0) {
-      setActiveIndex(viewableItems[0].index || 0);
-    }
-  }).current;
-
-  const viewabilityConfig = {
-    itemVisiblePercentThreshold: 50,
-  };
-
-  return (
-    <View style={Styles.carouselContainer}>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <Banner {...item} style={Styles.bannerCard} />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled={false}
-        snapToInterval={BANNER_WIDTH}
-        decelerationRate="fast"
-        contentContainerStyle={Styles.carouselContent}
-        onScroll={handleScroll}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-      />
-
-      <View style={Styles.paginationContainer}>
-        {data.map((_, index) => {
-          const dotWidth = scrollX.interpolate({
-            inputRange: [
-              BANNER_WIDTH * (index - 1),
-              BANNER_WIDTH * index,
-              BANNER_WIDTH * (index + 1),
-            ],
-            outputRange: [8, 16, 8],
-            extrapolate: 'clamp',
-          });
-
-          const dotOpacity = scrollX.interpolate({
-            inputRange: [
-              BANNER_WIDTH * (index - 1),
-              BANNER_WIDTH * index,
-              BANNER_WIDTH * (index + 1),
-            ],
-            outputRange: [0.3, 1, 0.3],
-            extrapolate: 'clamp',
-          });
-
-          return (
-            <Animated.View
-              key={index.toString()}
-              style={[Styles.dot, { width: dotWidth, opacity: dotOpacity }]}
-            />
-          );
-        })}
-      </View>
-    </View>
-  );
-};
-
-const EventsList = ({ items }) => {
-  return (
+const Categories = ({ data }) => (
+  <View style={{ marginTop: 10 }}>
     <FlatList
-      data={items}
-      renderItem={({ item }) => <CardItem item={item} />}
-      keyExtractor={item => item.id}
-      showsVerticalScrollIndicator={false}
+      data={data}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={item => item.id.toString()}
+      renderItem={({ item }) => <CategoryCard {...item} />}
+      contentContainerStyle={Styles.categoryCard}
     />
-  );
-};
+  </View>
+);
 
-const Container = () => {
-  return (
-    <View style={Styles.container}>
-      {categories(categoriesItem)}
-      <View style={Styles.section}>
-        <Text style={Styles.welcomeText}>Recommandation</Text>
-        <View style={Styles.line} />
-        <BannersCarousel data={bannerData} />
-      </View>
+const BannersCarousel = ({ data }) => (
+  <FlatList
+    data={data}
+    horizontal
+    pagingEnabled
+    snapToAlignment="center"
+    showsHorizontalScrollIndicator={false}
+    keyExtractor={(item, index) => index.toString()}
+    renderItem={({ item }) => <Banner {...item} style={Styles.bannerCard} />}
+    contentContainerStyle={Styles.carouselContent}
+    style={{ marginTop: 15 }}
+  />
+);
 
-      <View style={Styles.section}>
-        <Text style={Styles.sectionTitle}>Evenements</Text>
-        <View style={Styles.line} />
-        <EventsList items={itemEvents} />
-      </View>
-    </View>
-  );
-};
+const EventsList = ({ items }) => (
+  <FlatList
+    data={items}
+    renderItem={({ item }) => <CardItem item={item} />}
+    keyExtractor={item => item.id}
+    nestedScrollEnabled
+    scrollEnabled={false}
+  />
+);
+
+const SiteBest = ({ data }) => (
+  <View style={{ marginTop: 10 }}>
+    <FlatList
+      data={data}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={item => item.id}
+      renderItem={({ item }) => <CardSiteItem siteData={item} />}
+      contentContainerStyle={{ gap: 15, paddingHorizontal: 10 }}
+    />
+  </View>
+);
+
+const 
 
 const Home = () => {
   return (
     <View>
-      <Headers
-        userData={{
-          name: 'Jean Dupont',
-          avatarUrl: 'https://randomuser.me/api/portraits/thumb/men/75.jpg',
-        }}
-        onMenuPress={() => console.log('Menu Pressed')}
-        onSearchPress={() => console.log('Search Pressed')}
-        onNotificationPress={() => console.log('Notification Pressed')}
+      <View style={Styles.headerContainer}>
+        <Headers
+          userData={{
+            name: 'Jean Dupont',
+            avatarUrl: 'https://randomuser.me/api/portraits/thumb/men/75.jpg',
+          }}
+          onMenuPress={() => console.log('Menu Pressed')}
+          onSearchPress={() => console.log('Search Pressed')}
+          onNotificationPress={() => console.log('Notification Pressed')}
+        />
+      </View>
+      <FlatList
+        ListHeaderComponent={
+          <>
+            <View style={[Styles.container]}>
+              <Categories data={categoriesItem} />
+
+              <View style={Styles.section}>
+                <Text style={Styles.sectionTitle}>Recommandation</Text>
+                <View style={Styles.line} />
+                <BannersCarousel data={bannerData} />
+              </View>
+
+              <View style={Styles.section}>
+                <Text style={Styles.sectionTitle}>Évènements</Text>
+                <View style={Styles.line} />
+              </View>
+            </View>
+          </>
+        }
+        data={itemEvents}
+        renderItem={({ item }) => <CardItem item={item} />}
+        keyExtractor={item => item.id}
+        contentContainerStyle={{ paddingBottom: height * 0.3 }}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          <>
+            <View style={Styles.container}>
+              <View style={Styles.section}>
+                <Text style={Styles.sectionTitle}> Meilleur Places</Text>
+                <View style={Styles.line} />
+                <SiteBest data={siteData} />
+              </View>
+            </View>
+            <View style={Styles.container}>
+              <View style={Styles.section}>
+                <Text style={Styles.sectionTitle}> Témoignage</Text>
+                <View style={Styles.line} />
+                <SiteBest data={siteData} />
+              </View>
+            </View>
+          </>
+        }
       />
-      <Container />
     </View>
   );
 };
-
 export default Home;

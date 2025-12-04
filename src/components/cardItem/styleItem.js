@@ -13,6 +13,7 @@ const stylesCardIem = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     marginVertical: 8,
+    marginHorizontal: 5,
 
     // Ombre douce et peu élevée (style Dribbble)
     shadowColor: '#000',

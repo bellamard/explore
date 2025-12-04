@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 const StylesHeader = StyleSheet.create({
   mainContainer: {
-    paddingTop: 50, // Espace pour la barre de statut (ajuster si nécessaire)
+    paddingTop: 10, // Espace pour la barre de statut (ajuster si nécessaire)
     paddingHorizontal: 20,
     backgroundColor: '#FFFFFF', // Fond blanc propre
     borderBottomWidth: 0,

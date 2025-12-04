@@ -1,17 +1,11 @@
 import React from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
-// Nous allons utiliser FontAwesome pour le marqueur, l'étoile et le cœur.
 import Icon from 'react-native-vector-icons/FontAwesome';
 import stylesCardIem from './styleItem';
-// Assurez-vous que les couleurs sont bien définies dans vos styles globaux
-// Ex: const colors = { primary: '#4F46E5', accent: '#FFC107', price: '#3295A8' }
 
-// Note: Nous simplifions les props pour ce format, en utilisant principalement `item`.
 const CardItem = ({ item, onFavoritePress }) => {
-  // Fallbacks
   const defaultImage = 'https://picsum.photos/100/100?random=4';
 
-  // Utiliser les props qui correspondent à l'image fournie
   const finalTitle = item?.title || 'Destination';
   const finalLocation = item?.location || 'Lieu non spécifié';
   const finalRating = item?.rating || 'N/A';
@@ -50,7 +44,6 @@ const CardItem = ({ item, onFavoritePress }) => {
             <Text style={stylesCardIem.ratingText}>{finalRating}</Text>
           </View>
 
-          {/* Prix (à droite) */}
           <Text style={stylesCardIem.priceText}>
             ${finalPrice}
             <Text style={stylesCardIem.priceSuffix}>/Person</Text>
@@ -58,7 +51,6 @@ const CardItem = ({ item, onFavoritePress }) => {
         </View>
       </View>
 
-      {/* 3. BOUTON FAVORIS (Côté Droit) */}
       <TouchableOpacity
         style={stylesCardIem.favoriteButton}
         onPress={onFavoritePress}
