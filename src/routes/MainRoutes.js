@@ -1,9 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Launch from '../screens/launch';
-import Home from '../screens/home';
+import DashRoutes from './DashRoutes';
 import Login from '../screens/login';
-
 
 const Stack = createNativeStackNavigator();
 
@@ -21,12 +20,10 @@ const MainRoutes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Home"
-        component={Home}
+        name="Dash"
+        component={DashRoutes}
         options={{ headerShown: false }}
       />
-      
-     
     </Stack.Navigator>
   );
 };

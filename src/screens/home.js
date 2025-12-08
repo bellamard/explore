@@ -6,6 +6,7 @@ import CategoryCard from '../components/category';
 import Banner from '../components/banner';
 import CardItem from '../components/cardItem';
 import CardSiteItem from '../components/cardSite';
+import CardAvis from '../components/avis';
 const { height } = Dimensions.get('window');
 
 const categoriesItem = [
@@ -155,6 +156,42 @@ const siteData = [
   },
 ];
 
+const avisData = [
+  {
+    id: 'a1',
+    author: 'Jean Dupont',
+    avatar: 'https://randomuser.me/api/portraits/thumb/men/75.jpg',
+    rating: 4.8,
+    content:
+      'Super expérience, je recommande vivement ! Le lieu était magnifique et le service au top.',
+    title: 'Visite Inoubliable',
+    imageUrl: 'https://picsum.photos/200/300?random=1',
+    reference: 'Eiffel Tower',
+  },
+  {
+    id: 'a2',
+    author: 'Marie Curie',
+    avatar: 'https://randomuser.me/api/portraits/thumb/men/45.jpg',
+    rating: 4.5,
+    content:
+      "Une aventure incroyable, j'ai adoré chaque moment. Les collections sont vastes et très bien présentées.",
+    title: 'Aventure Incroyable',
+    imageUrl: 'https://picsum.photos/200/300?random=2',
+    reference: 'Louvre Museum',
+  },
+  {
+    id: 'a3',
+    author: 'Albert Einstein',
+    avatar: 'https://randomuser.me/api/portraits/thumb/men/65.jpg',
+    rating: 5.0,
+    content:
+      "Une expérience enrichissante et mémorable. L'architecture est à couper le souffle, un must-see!",
+    title: 'Expérience Enrichissante',
+    imageUrl: 'https://picsum.photos/200/300?random=3',
+    reference: 'Notre-Dame Cathedral',
+  },
+];
+
 const Categories = ({ data }) => (
   <View style={{ marginTop: 10 }}>
     <FlatList
@@ -205,7 +242,19 @@ const SiteBest = ({ data }) => (
   </View>
 );
 
-const 
+const AvisClient = ({ data }) => (
+  <View style={{ marginTop: 10 }}>
+    <FlatList
+      data={data}
+      horizontal
+      pagingEnabled
+      snapToAlignment="center"
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({ item }) => <CardAvis {...item} />}
+    />
+  </View>
+);
 
 const Home = () => {
   return (
@@ -258,7 +307,7 @@ const Home = () => {
               <View style={Styles.section}>
                 <Text style={Styles.sectionTitle}> Témoignage</Text>
                 <View style={Styles.line} />
-                <SiteBest data={siteData} />
+                <AvisClient data={avisData} />
               </View>
             </View>
           </>

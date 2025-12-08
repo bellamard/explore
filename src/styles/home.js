@@ -42,12 +42,15 @@ export default StyleSheet.create({
     marginBottom: 15,
   },
 
-  // Carousel
   carouselContent: {
     paddingHorizontal: 10,
   },
 
   bannerCard: {
+    marginHorizontal: 10,
+    width: width * 0.85,
+  },
+  Card: {
     marginHorizontal: 10,
     width: width * 0.85,
   },

@@ -71,7 +71,7 @@ const Launch = () => {
       console.warn(error);
     } finally {
       userToken === null
-        ? navigation.navigate('Home')
+        ? navigation.navigate('Dash')
         : navigation.navigate('Login');
     }
   }, [navigation, userToken, fetchData]);
