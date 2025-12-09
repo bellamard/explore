@@ -19,7 +19,7 @@ const DashRoutes = () => {
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    marginBottom: 45,
+    marginBottom: 55,
     margingHorizontal: 0,
     borderRadius: 50,
     height: Platform.select({ ios: 85, android: 70 }),
