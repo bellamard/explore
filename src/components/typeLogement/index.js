@@ -1,21 +1,23 @@
+// components/TypeLogement.js
 import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import StylesType from './StyleType';
+// Importation des styles depuis le fichier harmonisé
+import { StylesLogement, Colors } from '../../styles/logement';
 
 const TypeLogement = ({ isActive, typeName, icone, onPress }) => {
   const containerStyle = isActive
-    ? StylesType.containerActive
-    : StylesType.containerInactive;
-  const textStyle = isActive ? StylesType.textActive : StylesType.textInactive;
-  const iconColor = isActive
-    ? StylesType.iconActive.color
-    : StylesType.iconInactive.color;
+    ? StylesLogement.typeContainerActive
+    : StylesLogement.typeContainerInactive;
+  const textStyle = isActive
+    ? StylesLogement.typeTextActive
+    : StylesLogement.typeTextInactive;
+  const iconColor = isActive ? Colors.white : Colors.textSecondary; // Utiliser la palette
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={StylesType.wrapper}
+      style={StylesLogement.typeWrapper}
       activeOpacity={0.7}
     >
       <View style={containerStyle}>

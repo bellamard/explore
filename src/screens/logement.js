@@ -1,80 +1,22 @@
+// Logements.js
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import {
-  Text,
-  View,
-  FlatList,
-  ActivityIndicator,
-  Modal, // Import de Modal
-  TouchableOpacity, // Utile pour les boutons de modale
-} from 'react-native';
-import HeaderLogement from '../components/headerLogement';
+import { View, FlatList, ActivityIndicator, Text, Alert } from 'react-native';
+
+// Import des composants et styles
+import HeaderLogement from '../components/headerLogement'; // Renommage pour cohérence
 import TypeLogement from '../components/typeLogement';
 import SiteCard from '../components/siteCard';
-import StylesLogement from '../styles/logement';
+import SearchModal from '../components/SearchModal';
+import FilterModal from '../components/FilterModal'; // Le nouveau composant complet
+import { StylesLogement, Colors } from '../styles/logement'; // Styles regroupés
 
-// --- NOUVEAU: Composant de Filtre Modal (À implémenter) ---
-// Ce composant doit être créé séparément (ex: FilterModal.js)
-const FilterModalComponent = ({
-  visible,
-  onClose,
-  initialFilters,
-  onApplyFilters,
-}) => {
-  // Ici, vous ajouteriez la logique interne pour gérer les sliders de prix,
-  // les sélecteurs de type et de note.
-  const [tempFilters, setTempFilters] = useState(initialFilters);
-
-  // Exemple de gestion d'un changement de prix (vous aurez besoin de Sliders/Inputs)
-  const handlePriceChange = (min, max) => {
-    setTempFilters(prev => ({ ...prev, minPrice: min, maxPrice: max }));
-  };
-
-  const handleApply = () => {
-    onApplyFilters(tempFilters);
-    onClose();
-  };
-
-  return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View style={StylesLogement.modalContainer}>
-        <View style={StylesLogement.modalContent}>
-          <Text style={StylesLogement.modalTitle}>Filtres Avancés</Text>
-
-          {/* --- Zone d'Implémentation des Filtres --- */}
-          <Text>Prix Min/Max (Sliders/Inputs)</Text>
-          <Text>Qualité/Note Min (Sélecteur d'étoiles)</Text>
-
-          <TouchableOpacity
-            style={StylesLogement.applyButton}
-            onPress={handleApply}
-          >
-            <Text style={StylesLogement.applyButtonText}>
-              Appliquer les Filtres
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={onClose}>
-            <Text style={StylesLogement.closeButtonText}>Annuler</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  );
-};
-// -----------------------------------------------------------------
-
-// --- Données Factices Améliorées ---
+// --- Données Factices Améliorées (Les vôtres, rendues plus lisibles) ---
 const ALL_TYPE_OPTION = {
   id: 0,
   typeName: 'Tout',
   icone: 'globe',
   isActive: true,
-}; // Nouvelle option "Tout"
+};
 const MOCK_TYPES = [
   ALL_TYPE_OPTION,
   { id: 1, typeName: 'Appartement', icone: 'building', isActive: false },
@@ -85,12 +27,12 @@ const MOCK_TYPES = [
 ];
 
 const MOCK_LOGEMENTS = [
-  // ... (vos données existantes)
+  // ... Garder vos données factices
   {
     id: 'l1',
     logementName: 'Magnifique Loft en centre-ville',
     typeLogement: 'Appartement',
-    Price: 120, // Rendre le prix numérique pour le filtrage
+    Price: 120,
     period: '/nuit',
     ratingValue: 4.7,
     image: 'https://picsum.photos/400/300?random=1',
@@ -137,43 +79,39 @@ const MOCK_LOGEMENTS = [
     iconName: 'building',
   },
 ];
-// -----------------------------------------------------------------
 
 const INITIAL_FILTERS = {
   minPrice: 0,
-  maxPrice: 500, // Une valeur par défaut élevée
+  maxPrice: 500,
   minRating: 0,
-  typeFilter: null, // Utilisé seulement par la modale, pas le FlatList en haut
 };
 
+// --- Composant Principal ---
 const Logements = () => {
   const [loading, setLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [username, setUsername] = useState('Alexis');
+  const [username] = useState('Alexis'); // Simplifié, pas besoin de setUsername
 
-  const [dataLogement, setDataLogement] = useState(MOCK_LOGEMENTS);
+  const [dataLogement] = useState(MOCK_LOGEMENTS); // Logements complets
   const [typeLogementList, setTypeLogementList] = useState(MOCK_TYPES);
 
-  // NOUVEAUX ÉTATS POUR LE FILTRAGE AVANCÉ ET LA MODALE
-  const [selectedType, setSelectedType] = useState(ALL_TYPE_OPTION.typeName); // Défaut: 'Tout'
-  const [searchQuery, setSearchQuery] = useState('');
+  // États de Filtrage
+  const [selectedType, setSelectedType] = useState(ALL_TYPE_OPTION.typeName); // Filtre rapide
+  const [searchQuery, setSearchQuery] = useState(''); // Filtre de recherche
   const [isModalVisible, setIsModalVisible] = useState(false); // État de la Modale
-  const [advancedFilters, setAdvancedFilters] = useState(INITIAL_FILTERS);
+  const [advancedFilters, setAdvancedFilters] = useState(INITIAL_FILTERS); // Filtres Modale
+  const [isSearchModalVisible, setIsSearchModalVisible] = useState(false); // État de la Modale de Recherche
 
   useEffect(() => {
     // Simuler le chargement des données
     setTimeout(() => {
       setLoading(false);
-      // OPTIONNEL: Calculer minPrice/maxPrice dynamique si les données sont réelles
     }, 1500);
   }, []);
 
-  // --- LOGIQUE DE FILTRAGE PAR TYPE (FlatList en haut) ---
-  const handleTypeSelect = typeName => {
-    // Si l'utilisateur reclique sur le type sélectionné, cela ne fait rien (ou pourrait désélectionner)
-    // Ici, on gère la sélection simple, 'Tout' est géré implicitement par le `filteredLogements`
-    setSelectedType(typeName);
+  // --- Handlers ---
 
+  const handleTypeSelect = useCallback(typeName => {
+    setSelectedType(typeName);
     // Mettre à jour l'état visuel des types
     setTypeLogementList(prevTypes =>
       prevTypes.map(type => ({
@@ -181,31 +119,26 @@ const Logements = () => {
         isActive: type.typeName === typeName,
       })),
     );
-  };
+  }, []);
 
-  // --- HANDLERS D'ÉVÉNEMENTS POUR LA MODALE ET LA RECHERCHE ---
   const onSearchChange = useCallback(text => {
     setSearchQuery(text);
   }, []);
 
-  const onFilterPress = useCallback(() => {
-    setIsModalVisible(true); // Ouvrir la modale
-  }, []);
-
   const onApplyFilters = useCallback(filters => {
-    // Appliquer les filtres avancés reçus de la modale
     setAdvancedFilters(filters);
-    // OPTIONNEL: Désélectionner le FlatList de type en haut si un type est choisi dans la modale
-    if (filters.typeFilter) {
-      handleTypeSelect(ALL_TYPE_OPTION.typeName); // Revenir à 'Tout' dans la FlatList
-    }
+    setIsModalVisible(false); // Fermer la modale après application
   }, []);
 
-  // --- LOGIQUE DE RECHERCHE ET DE FILTRAGE (Fonction clé) ---
+  const formatPrice = useCallback(price => {
+    return typeof price === 'number' ? `€${price}` : price;
+  }, []);
+
+  // --- LOGIQUE DE FILTRAGE (Combinée et Optimisée) ---
   const filteredLogements = useMemo(() => {
     let result = dataLogement;
 
-    // 1. Filtrage par Type (depuis le FlatList en haut)
+    // 1. Filtrage par Type (FlatList en haut)
     if (selectedType !== ALL_TYPE_OPTION.typeName) {
       result = result.filter(
         logement => logement.typeLogement === selectedType,
@@ -222,32 +155,20 @@ const Logements = () => {
       );
     }
 
-    // 3. Filtrage par Filtres Avancés (depuis la Modale)
+    // 3. Filtrage par Filtres Avancés (Prix et Note/Qualité)
     const { minPrice, maxPrice, minRating } = advancedFilters;
 
-    // a. Filtrage par Prix
-    result = result.filter(
-      logement => logement.Price >= minPrice && logement.Price <= maxPrice,
-    );
-
-    // b. Filtrage par Note/Qualité
-    result = result.filter(logement => logement.ratingValue >= minRating);
-
-    // c. Filtrage par Type (si la modale le gère, ici on se concentre sur le FlatList)
-    // Si le filtre de type était géré uniquement par la modale, on l'ajouterait ici
+    result = result
+      .filter(
+        logement => logement.Price >= minPrice && logement.Price <= maxPrice,
+      )
+      .filter(logement => logement.ratingValue >= minRating);
 
     return result;
   }, [dataLogement, selectedType, searchQuery, advancedFilters]);
 
-  // Fonction utilitaire pour formatter le prix dans le SiteCard
-  const formatPrice = price => {
-    if (typeof price === 'number') {
-      return `€${price}`;
-    }
-    return price;
-  };
+  // --- Composants de Rendu ---
 
-  // --- Composants de Rendu (Pour la clarté) ---
   const GestionType = () => (
     <View style={StylesLogement.typeSection}>
       <FlatList
@@ -259,7 +180,6 @@ const Logements = () => {
           <TypeLogement
             {...item}
             onPress={() => handleTypeSelect(item.typeName)}
-            // Gérer le style actif/inactif
             isActive={item.typeName === selectedType}
           />
         )}
@@ -269,26 +189,19 @@ const Logements = () => {
   );
 
   const ResearchList = () => {
-    // ... (Logique de chargement, erreur, aucun résultat inchangée)
-
     if (loading) {
       return (
         <View style={StylesLogement.feedbackContainer}>
-          <ActivityIndicator size="large" color="#4F46E5" />
+          <ActivityIndicator size="large" color={Colors.primary} />
           <Text style={StylesLogement.feedbackText}>
-            Chargement des logements...
+            Recherche des meilleurs logements...
           </Text>
         </View>
       );
     }
 
-    if (isError) {
-      // ... (Gestion de l'erreur)
-    }
-
     if (filteredLogements.length === 0) {
-      // Message d'absence de résultat plus générique car plusieurs filtres sont actifs
-      const message = `Aucun logement ne correspond à vos critères actuels.`;
+      const message = `Aucun logement ne correspond à vos critères actuels. Modifiez vos filtres ou votre recherche.`;
       return (
         <View style={StylesLogement.feedbackContainer}>
           <Text style={StylesLogement.feedbackText}>{message}</Text>
@@ -302,15 +215,18 @@ const Logements = () => {
           {filteredLogements.length} logements trouvés
         </Text>
 
-        {/* FlatList des Logements (Utilise SiteCard) */}
         <FlatList
           data={filteredLogements}
           renderItem={({ item }) => (
             <SiteCard
               data={{
                 ...item,
-                Price: formatPrice(item.Price), // Formatter le prix pour le rendu
+                Price: formatPrice(item.Price),
               }}
+              // Optionnel: Ajouter un onPress pour naviguer vers le détail
+              onPress={() =>
+                console.log('Aller au détail de:', item.logementName)
+              }
             />
           )}
           keyExtractor={item => item.id}
@@ -327,28 +243,39 @@ const Logements = () => {
       {/* 1. Header et Barre de Recherche */}
       <HeaderLogement
         userName={username}
-        onFilterPress={onFilterPress}
-        onNotificationPress={() => console.log('Notification pressed')}
-        onSearchPress={() =>
-          console.log('Naviguer vers la page de recherche complète')
-        }
-        onSearchChange={onSearchChange}
+        onFilterPress={() => setIsModalVisible(true)} // Ouvre la modale
+        onSearchPress={() => {
+          console.log('Opening search modal'); // Pour déboguer
+          setIsSearchModalVisible(true);
+        }}
+        searchQuery={searchQuery} // Afficher la recherche
       />
 
       {/* 2. Filtres rapides par Type */}
       <GestionType />
 
       {/* 3. Liste des Logements */}
-      <View style={{ flex: 1 }}>
+      <View style={StylesLogement.boxListLogement}>
         <ResearchList />
       </View>
 
       {/* 4. Modale de Filtres Avancés */}
-      <FilterModalComponent
+      <FilterModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         initialFilters={advancedFilters}
         onApplyFilters={onApplyFilters}
+      />
+
+      <SearchModal
+        visible={isSearchModalVisible}
+        onClose={() => setIsSearchModalVisible(false)}
+        onSearch={query => {
+          console.log('Search query:', query); // Pour déboguer
+          setSearchQuery(query);
+          setIsSearchModalVisible(false);
+        }}
+        initialValue={searchQuery}
       />
     </View>
   );

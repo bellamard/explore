@@ -1,87 +1,75 @@
+// components/FilterModal.js (Nouveau fichier)
 import React, { useState, useEffect } from 'react';
 import {
-  Text,
-  View,
   Modal,
+  View,
+  Text,
   TouchableOpacity,
-  TextInput,
+  Switch,
   ScrollView,
 } from 'react-native';
-// Assurez-vous que les styles importés sont ceux qui contiennent modalContainer, modalContent, etc.
-import StylesLogement from './styles/logement';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Slider from '@react-native-community/slider'; // Nécessite l'installation
+import { StylesLogement, Colors } from '../../styles/logement';
 
-// Définition des options de Note/Qualité et de Type pour la modale
-const RATING_OPTIONS = [5, 4, 3, 2, 1];
-const TYPE_OPTIONS = ['Appartement', 'Maison', 'Villa', 'Chambre', 'Bateau']; // Récupérées des mocks
+const RatingSelector = ({ minRating, onSelect }) => {
+  const stars = [1, 2, 3, 4, 5];
 
-const FilterModalComponent = ({
-  visible,
-  onClose,
-  initialFilters,
-  onApplyFilters,
-}) => {
-  // 1. États internes pour la modale
-  const [minPrice, setMinPrice] = useState(String(initialFilters.minPrice));
-  const [maxPrice, setMaxPrice] = useState(String(initialFilters.maxPrice));
-  const [minRating, setMinRating] = useState(initialFilters.minRating);
-  const [selectedType, setSelectedType] = useState(initialFilters.typeFilter);
+  return (
+    <View style={StylesLogement.ratingSelectorContainer}>
+      <Text style={StylesLogement.filterLabel}>
+        Note Minimum: {minRating.toFixed(1)} Étoiles
+      </Text>
+      <View style={StylesLogement.starRow}>
+        {stars.map(star => (
+          <TouchableOpacity
+            key={star}
+            onPress={() => onSelect(star)}
+            style={StylesLogement.starButton}
+          >
+            <Icon
+              name="star"
+              size={30}
+              color={star <= minRating ? Colors.star : Colors.textSecondary}
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+};
 
-  // 2. Synchronisation de l'état interne avec les filtres initiaux à l'ouverture
+const FilterModal = ({ visible, onClose, initialFilters, onApplyFilters }) => {
+  const [tempFilters, setTempFilters] = useState(initialFilters);
+
   useEffect(() => {
-    if (visible) {
-      setMinPrice(String(initialFilters.minPrice));
-      setMaxPrice(String(initialFilters.maxPrice));
-      setMinRating(initialFilters.minRating);
-      setSelectedType(initialFilters.typeFilter);
-    }
+    // Synchroniser les filtres lorsque la modale s'ouvre
+    setTempFilters(initialFilters);
   }, [visible, initialFilters]);
 
-  // 3. Logique d'application des filtres
+  const handlePriceChange = (min, max) => {
+    setTempFilters(prev => ({
+      ...prev,
+      minPrice: Math.round(min),
+      maxPrice: Math.round(max),
+    }));
+  };
+
+  const handleRatingChange = rating => {
+    setTempFilters(prev => ({ ...prev, minRating: rating }));
+  };
+
   const handleApply = () => {
-    const filtersToApply = {
-      minPrice: Number(minPrice) || 0, // Assurer un nombre
-      maxPrice: Number(maxPrice) || 500, // Assurer un nombre
-      minRating: minRating,
-      typeFilter: selectedType,
-    };
-    onApplyFilters(filtersToApply);
+    onApplyFilters(tempFilters);
     onClose();
   };
 
-  // 4. Logique de réinitialisation
   const handleReset = () => {
-    // Reset aux valeurs initiales (ou valeurs par défaut absolues)
-    setMinPrice('0');
-    setMaxPrice('500');
-    setMinRating(0);
-    setSelectedType(null);
+    setTempFilters({ minPrice: 0, maxPrice: 500, minRating: 0 });
   };
 
-  // 5. Composant de rendu pour les étoiles de notation
-  const RatingSelector = ({ value, label, onPress }) => (
-    <TouchableOpacity
-      style={[
-        StylesLogement.ratingButton,
-        value === minRating && StylesLogement.ratingButtonActive,
-      ]}
-      onPress={onPress}
-    >
-      <Icon
-        name="star"
-        size={16}
-        color={value === minRating ? '#FFFFFF' : '#FFD700'}
-      />
-      <Text
-        style={[
-          StylesLogement.ratingText,
-          value === minRating && StylesLogement.ratingTextActive,
-        ]}
-      >
-        {` ${label}`}
-      </Text>
-    </TouchableOpacity>
-  );
+  // Ajout d'une logique simple pour la sélection de type (si vous le souhaitez dans la modale)
+  // Non implémenté ici pour se concentrer sur les sliders/ratings.
 
   return (
     <Modal
@@ -95,112 +83,74 @@ const FilterModalComponent = ({
           <View style={StylesLogement.modalHeader}>
             <Text style={StylesLogement.modalTitle}>Filtres Avancés</Text>
             <TouchableOpacity onPress={handleReset}>
-              <Text style={StylesLogement.resetText}>Réinitialiser</Text>
+              <Text style={StylesLogement.resetButtonText}>Réinitialiser</Text>
             </TouchableOpacity>
           </View>
-
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {/* A. Filtre de Prix Min/Max */}
-            <Text style={StylesLogement.filterLabel}>💰 Prix par Nuit (€)</Text>
-            <View style={StylesLogement.priceInputContainer}>
-              <TextInput
-                style={StylesLogement.textInput}
-                placeholder="Min (€)"
-                keyboardType="numeric"
-                value={minPrice}
-                onChangeText={setMinPrice}
-                placeholderTextColor="#AAAAAA"
+          <ScrollView style={{ flexGrow: 1 }}>
+            {/* --- 1. Filtre de Prix --- */}
+            <View style={StylesLogement.filterGroup}>
+              <Text style={StylesLogement.filterLabel}>
+                Budget: {tempFilters.minPrice}€ à {tempFilters.maxPrice}€
+              </Text>
+              <Slider
+                style={StylesLogement.slider}
+                minimumValue={0}
+                maximumValue={500}
+                step={10}
+                minimumTrackTintColor={Colors.primary}
+                maximumTrackTintColor={Colors.backgroundLight}
+                thumbTintColor={Colors.primary}
+                value={tempFilters.maxPrice} // Utiliser un RangeSlider pour un vrai contrôle min/max
+                onValueChange={value =>
+                  handlePriceChange(tempFilters.minPrice, value)
+                }
               />
-              <View style={StylesLogement.priceSeparator} />
-              <TextInput
-                style={StylesLogement.textInput}
-                placeholder="Max (€)"
-                keyboardType="numeric"
-                value={maxPrice}
-                onChangeText={setMaxPrice}
-                placeholderTextColor="#AAAAAA"
+              {/* NOTE: Un RangeSlider est préférable pour un contrôle min ET max simultané */}
+            </View>
+
+            <View style={StylesLogement.separator} />
+
+            {/* --- 2. Filtre de Note/Qualité --- */}
+            <View style={StylesLogement.filterGroup}>
+              <RatingSelector
+                minRating={tempFilters.minRating}
+                onSelect={handleRatingChange}
               />
             </View>
 
-            {/* B. Filtre de Qualité/Note Minimum */}
-            <Text style={StylesLogement.filterLabel}>
-              ⭐ Note Minimum (sur 5)
-            </Text>
-            <View style={StylesLogement.ratingContainer}>
-              <TouchableOpacity
-                style={[
-                  StylesLogement.ratingButton,
-                  minRating === 0 && StylesLogement.ratingButtonActive,
-                ]}
-                onPress={() => setMinRating(0)}
-              >
-                <Text
-                  style={[
-                    StylesLogement.ratingText,
-                    minRating === 0 && StylesLogement.ratingTextActive,
-                  ]}
-                >
-                  Toutes
-                </Text>
-              </TouchableOpacity>
-              {RATING_OPTIONS.map(rating => (
-                <RatingSelector
-                  key={rating}
-                  value={rating}
-                  label={`${rating} et +`}
-                  onPress={() => setMinRating(rating)}
-                />
-              ))}
-            </View>
+            <View style={StylesLogement.separator} />
 
-            {/* C. Filtre de Type de Logement (Redondant avec la FlatList, mais utile ici) */}
-            <Text style={StylesLogement.filterLabel}>🏠 Type de Logement</Text>
-            <View style={StylesLogement.typeModalContainer}>
-              {TYPE_OPTIONS.map(type => (
-                <TouchableOpacity
-                  key={type}
-                  style={[
-                    StylesLogement.typeModalButton,
-                    selectedType === type &&
-                      StylesLogement.typeModalButtonActive,
-                  ]}
-                  onPress={() =>
-                    setSelectedType(selectedType === type ? null : type)
-                  }
-                >
-                  <Text
-                    style={[
-                      StylesLogement.typeModalText,
-                      selectedType === type &&
-                        StylesLogement.typeModalTextActive,
-                    ]}
-                  >
-                    {type}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+            {/* --- 3. Exemple d'Autre Filtre (Switch) --- */}
+            <View style={StylesLogement.filterGroupRow}>
+              <Text style={StylesLogement.filterLabel}>Avec Wifi</Text>
+              <Switch
+                trackColor={{ false: '#767577', true: Colors.primaryLight }}
+                thumbColor={Colors.primary}
+                value={false} // État réel à implémenter
+                onValueChange={() => {}}
+              />
             </View>
           </ScrollView>
 
-          {/* Boutons d'action en bas */}
-          <View style={StylesLogement.modalActions}>
-            <TouchableOpacity
-              style={StylesLogement.closeButton}
-              onPress={onClose}
-            >
-              <Text style={StylesLogement.closeButtonText}>Annuler</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={StylesLogement.applyButton}
-              onPress={handleApply}
-            >
-              <Text style={StylesLogement.applyButtonText}>Appliquer</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={StylesLogement.applyButton}
+            onPress={handleApply}
+          >
+            <Text style={StylesLogement.applyButtonText}>
+              Voir{' '}
+              {tempFilters.minRating > 0
+                ? 'les résultats filtrés'
+                : 'les logements'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={onClose}>
+            <Text style={StylesLogement.closeButtonText}>Fermer</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
   );
 };
 
-export default FilterModalComponent;
+export default FilterModal;

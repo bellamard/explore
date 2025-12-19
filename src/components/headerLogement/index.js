@@ -1,65 +1,63 @@
+// components/HeaderLogement.js
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  SafeAreaView,
-} from 'react-native';
+import { Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import StylesHeaderLogement from './StyleHeaderLogement';
+
+// Importation des styles depuis le fichier harmonisé
+import { StylesLogement, Colors } from '../../styles/logement';
 
 const HeaderLogement = ({
   userName,
   onNotificationPress,
   onFilterPress,
   onSearchPress,
+  searchQuery, // Ajouté pour afficher la recherche actuelle (si l'on utilisait un TextInput)
 }) => (
-  <SafeAreaView style={StylesHeaderLogement.safeArea}>
-    <View style={StylesHeaderLogement.container}>
-      <View style={StylesHeaderLogement.topRow}>
+  <SafeAreaView style={StylesLogement.safeArea}>
+    <View style={StylesLogement.headerContainer}>
+      {/* --- 1. Top Row: Titre et Notifications --- */}
+      <View style={StylesLogement.topRow}>
         <View>
-          <Text style={StylesHeaderLogement.greetingText}>
+          <Text style={StylesLogement.greetingText}>
             Bonjour, {userName || 'Voyageur'}!
           </Text>
-          <Text style={StylesHeaderLogement.mainTitle}>
+          <Text style={StylesLogement.mainTitle}>
             Où souhaitez-vous aller ?
           </Text>
         </View>
 
         <TouchableOpacity
           onPress={onNotificationPress}
-          style={StylesHeaderLogement.notificationButton}
+          style={StylesLogement.notificationButton}
         >
-          <Icon name="notifications" size={26} color="#333" />
+          <Icon name="notifications" size={26} color={Colors.textDark} />
         </TouchableOpacity>
       </View>
 
+      {/* --- 2. Floating Search Bar/Filter Trigger --- */}
       <TouchableOpacity
-        style={StylesHeaderLogement.searchContainer}
         onPress={onSearchPress}
+        style={StylesLogement.searchContainer}
         activeOpacity={0.8}
       >
-        <View style={StylesHeaderLogement.searchInputWrapper}>
+        <View style={StylesLogement.searchInputWrapper}>
           <Icon
             name="search"
             size={24}
-            color="#666"
-            style={StylesHeaderLogement.searchIcon}
+            color={Colors.primary}
+            style={StylesLogement.searchIcon}
           />
 
-          <Text style={StylesHeaderLogement.searchPlaceholder}>
-            Découvrez des lieux, villes...
-          </Text>
+          <Text>{searchQuery || 'Découvrez des lieux, villes...'}</Text>
         </View>
 
-        <View style={StylesHeaderLogement.separator} />
+        <View style={StylesLogement.separator} />
 
         <TouchableOpacity
           onPress={onFilterPress}
-          style={StylesHeaderLogement.filterButton}
+          style={StylesLogement.filterButton}
         >
-          <Icon name="tune" size={24} color="#4F46E5" />
+          <Icon name="tune" size={24} color={Colors.primary} />
         </TouchableOpacity>
       </TouchableOpacity>
     </View>

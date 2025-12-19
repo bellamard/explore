@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const CARD_WIDTH = width * 0.85; // 90% de la largeur de l'écran
+const CARD_WIDTH = width * 0.85; // 82% de la largeur de l'écran
 const CARD_HEIGHT = CARD_WIDTH * 0.7; // Ratio 4:5 ou 3:4
 
 const stylesSiteCard = StyleSheet.create({
@@ -10,7 +10,7 @@ const stylesSiteCard = StyleSheet.create({
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
     marginVertical: 10,
-    marginHorizontal: width * 0.05,
+    marginHorizontal: width * 0.03,
     borderRadius: 16, // Coins arrondis marqués
     elevation: 8, // Ombre (Android)
     shadowColor: '#000', // Ombre (iOS)
