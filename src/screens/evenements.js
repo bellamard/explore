@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import React, { useEffect, useState, useRef } from 'react';
+import { Text, View, FlatList, Image } from 'react-native';
+import {
+  ExpandableCalendar,
+  AgendaList,
+  CalendarProvider,
+} from 'react-native-calendars';
 import { LocaleConfig } from 'react-native-calendars';
 import HeaderLogement from '../components/headerLogement';
-import styles from '../styles/evenement';
+import styles, { calendarTheme } from '../styles/evenement';
+import { colors } from '../styles';
 
 LocaleConfig.locales['fr'] = {
   monthNames: [
@@ -47,6 +52,48 @@ LocaleConfig.locales['fr'] = {
   today: "Aujourd'hui",
 };
 LocaleConfig.defaultLocale = 'fr';
+const ITEMS = [
+  {
+    title: '2025-12-23',
+    data: [
+      {
+        hour: '12pm',
+        duration: '1h',
+        title: 'Déjeuner de Noël',
+        urlImage: 'https://picsum.photos/seed/picsum/200/300',
+      },
+    ],
+  },
+  {
+    title: '2025-12-25',
+    data: [
+      {
+        hour: '9am',
+        duration: '2h',
+        title: 'Ouverture des cadeaux',
+        urlImage: 'https://picsum.photos/seed/picsum/200/300',
+      },
+      {
+        hour: '2pm',
+        duration: '3h',
+        title: 'Repas de famille',
+        urlImage: 'https://picsum.photos/seed/picsum/200/300',
+      },
+    ],
+  },
+  {
+    title: '2025-12-28',
+    data: [
+      {
+        hour: '10am',
+        duration: '1h',
+        title: 'Brunch',
+        urlImage: 'https://picsum.photos/seed/picsum/200/300',
+      },
+    ],
+  },
+];
+
 const Evenements = ({ params }) => {
   const [username, setUsername] = useState('Voyageur');
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,32 +103,23 @@ const Evenements = ({ params }) => {
   const maxLimitDate = `${maxYear}-01-01`;
   const minYear = new Date().getFullYear();
   const minLimitDate = `${minYear}-01-01`;
-  const [markedDates, setMarkedDates] = useState({});
+  const today = new Date().toISOString().split('T')[0];
 
-  const handleLongPress = day => {
-    const dateString = day.dateString;
-
-    // On crée une copie de l'état actuel
-    let updatedMarkedDates = { ...markedDates };
-
-    if (updatedMarkedDates[dateString]) {
-      // Si la date existe déjà, on la supprime (décocher)
-      delete updatedMarkedDates[dateString];
-    } else {
-      // Sinon, on l'ajoute avec son style
-      updatedMarkedDates[dateString] = {
-        selected: true,
-        selectedColor: '#FF5733',
-        selectedTextColor: 'white',
-      };
-    }
-
-    // Mise à jour de l'état
-    setMarkedDates(updatedMarkedDates);
-  };
+  const renderItem = ({ item }) => (
+    <View style={styles.item}>
+      <View style={styles.itemHeader}>
+        <Image source={{ uri: item.urlImage }} style={styles.itemImage} />
+        <Text style={styles.itemHour}>{item.hour}</Text>
+      </View>
+      <View>
+        <Text style={styles.itemTitle}>{item.title}</Text>
+        <Text style={styles.itemDuration}>{item.duration}</Text>
+      </View>
+    </View>
+  );
 
   return (
-    <View>
+    <View style={styles.container}>
       <HeaderLogement
         userName={username}
         onFilterPress={() => setIsModalVisible(true)}
@@ -91,82 +129,29 @@ const Evenements = ({ params }) => {
         }}
         searchQuery={searchQuery} // Afficher la recherche
       />
-      <Calendar
-        // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-        minDate={minLimitDate}
-        // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        maxDate={maxLimitDate}
-        // Handler which gets executed on day press. Default = undefined
-        onDayPress={day => {
-          console.log('selected day', day);
-        }}
-        // Handler which gets executed on day long press. Default = undefined
-        onDayLongPress={handleLongPress}
-        markedDates={markedDates}
-        // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-        monthFormat={'yyyy MM'}
-        // Handler which gets executed when visible month changes in calendar. Default = undefined
-        onMonthChange={month => {
-          console.log('month changed', month);
-        }}
-        // Hide month navigation arrows. Default = false
-        hideArrows={true}
-        // Replace default arrows with custom ones (direction can be 'left' or 'right')
-        renderArrow={direction => <Arrow />}
-        // Do not show days of other months in month page. Default = false
-        hideExtraDays={true}
-        // If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out
-        // day from another month that is visible in calendar page. Default = false
-        disableMonthChange={true}
-        // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday
-        firstDay={1}
-        // Hide day names. Default = false
-        hideDayNames={false}
-        // Show week numbers to the left. Default = false
-        showWeekNumbers={false}
-        // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-        onPressArrowLeft={subtractMonth => subtractMonth()}
-        // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-        onPressArrowRight={addMonth => addMonth()}
-        // Disable left arrow. Default = false
-        disableArrowLeft={true}
-        // Disable right arrow. Default = false
-        disableArrowRight={true}
-        // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-        disableAllTouchEventsForDisabledDays={true}
-        // Replace default month and year title with custom one. the function receive a date as parameter
-        renderHeader={date => {
-          /*Return JSX*/
-          const month = LocaleConfig.locales['fr'].monthNames[date.getMonth()];
-          const year = date.getFullYear();
+      <CalendarProvider
+        date={today}
+        // Cette fonction se déclenche quand on change de date
+        onDateChanged={date => console.log('Date sélectionnée:', date)}
+        showTodayButton
+      >
+        <ExpandableCalendar
+          firstDay={1}
+          minDate={minLimitDate}
+          maxDate={maxLimitDate}
+          markedDates={{
+            [today]: { selected: true, selectedColor: '#00adf5' },
+          }}
+          theme={calendarTheme}
+        />
 
-          return (
-            <View style={styles.headerContainer}>
-              <Text style={styles.monthText}>{month}</Text>
-              <Text style={styles.yearText}>{year}</Text>
-            </View>
-          );
-        }}
-        theme={{
-          // On retire les styles par défaut qui pourraient gêner
-          'stylesheet.calendar.header': {
-            header: {
-              flexDirection: 'row',
-              justifyContent: 'space-between', // Aligne le titre et les flèches
-              paddingLeft: 10,
-              paddingRight: 10,
-              marginTop: 10,
-              alignItems: 'center',
-            },
-          },
-        }}
-        // Enable the option to swipe between months. Default = false
-        enableSwipeMonths={true}
-      />
-      <Text style={styles.infoText}>
-        Appuyez longuement sur une date pour la sélectionner ou la
-        désélectionner.
-      </Text>
+        {/* La liste des tâches qui prend le reste de l'espace */}
+        <AgendaList
+          sections={ITEMS}
+          renderItem={renderItem}
+          sectionStyle={styles.section}
+        />
+      </CalendarProvider>
     </View>
   );
 };

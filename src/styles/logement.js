@@ -153,6 +153,7 @@ export const StylesLogement = StyleSheet.create({
   headerContainer: {
     paddingHorizontal: 20,
     paddingBottom: 25,
+    paddingTop: Platform.OS === 'ios' ? 50 : 40,
     backgroundColor: Colors.background,
   },
   topRow: {
