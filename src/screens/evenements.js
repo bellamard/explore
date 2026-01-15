@@ -894,29 +894,28 @@ const Evenements = () => {
                 Sélectionnez une date pour voir les événements
               </Text>
             </View>
-
-            <ExpandableCalendar
-              firstDay={1}
-              minDate={minLimitDate}
-              maxDate={maxLimitDate}
-              markedDates={getMarkedDates()}
-              theme={calendarTheme}
-              initialPosition={calendarOpen ? 'open' : 'closed'}
-              onCalendarToggled={handleCalendarStateChange}
-              hideKnob={false}
-              closeOnDayPress={false}
-              onDayPress={day => {
-                console.log('Jour sélectionné:', day.dateString);
-                setSelectedDate(day.dateString);
-              }}
-              style={styles.calendar}
-              pastScrollRange={12}
-              futureScrollRange={12}
-              allowSelectionOutOfRange={false}
-              disableMonthChange={false}
-              animateScroll={true}
-            />
           </View>
+          <ExpandableCalendar
+            firstDay={1}
+            minDate={minLimitDate}
+            maxDate={maxLimitDate}
+            markedDates={getMarkedDates()}
+            theme={calendarTheme}
+            initialPosition={calendarOpen ? 'open' : 'closed'}
+            onCalendarToggled={handleCalendarStateChange}
+            hideKnob={false}
+            closeOnDayPress={false}
+            onDayPress={day => {
+              console.log('Jour sélectionné:', day.dateString);
+              setSelectedDate(day.dateString);
+            }}
+            style={styles.calendar}
+            pastScrollRange={12}
+            futureScrollRange={12}
+            allowSelectionOutOfRange={false}
+            disableMonthChange={false}
+            animateScroll={true}
+          />
 
           {/* Filtres rapides */}
           {renderFilters()}
