@@ -12,6 +12,7 @@ import {
   Platform,
   RefreshControl,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import { ExpandableCalendar, CalendarProvider } from 'react-native-calendars';
@@ -19,6 +20,7 @@ import { LocaleConfig } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HeaderLogement from '../components/headerLogement';
 import styles, { calendarTheme } from '../styles/evenement';
+import { Colors } from '../styles/logement';
 
 const { height, width } = Dimensions.get('window');
 
@@ -87,6 +89,7 @@ const Evenements = () => {
     categories: [],
     priceRange: { min: 0, max: 50000 },
   });
+  const [loadingCalendar, setLoadingCalendar] = useState(true);
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const modalAnim = useRef(new Animated.Value(0)).current;
@@ -101,7 +104,9 @@ const Evenements = () => {
   // Initialisation
   useEffect(() => {
     setFilteredEvents(events);
-  }, []);
+    // Simuler un chargement
+    setTimeout(() => setLoadingCalendar(!loadingCalendar), 2000);
+  }, [events]);
 
   // Filtrage des événements
   useEffect(() => {
@@ -865,11 +870,44 @@ const Evenements = () => {
     }
   };
 
+  const expandableCalendar = () => {
+    if (!loadingCalendar) {
+      return (
+        <ExpandableCalendar
+          firstDay={1}
+          minDate={minLimitDate}
+          maxDate={maxLimitDate}
+          markedDates={getMarkedDates()}
+          theme={calendarTheme}
+          initialPosition={calendarOpen ? 'open' : 'closed'}
+          onCalendarToggled={handleCalendarStateChange}
+          hideKnob={false}
+          closeOnDayPress={false}
+          onDayPress={day => {
+            console.log('Jour sélectionné:', day.dateString);
+            setSelectedDate(day.dateString);
+          }}
+          style={styles.calendar}
+          pastScrollRange={12}
+          futureScrollRange={12}
+          allowSelectionOutOfRange={false}
+          disableMonthChange={false}
+          animateScroll={true}
+        />
+      );
+    } else {
+      return (
+        <View style={styles.calendarLoading}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+          <Text>Chargement du calendrier...</Text>
+        </View>
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
-      <HeaderLogement userName="Voyageur" title="Événements" showBack={false} />
 
       <View style={{ flex: 1 }}>
         {/* Calendrier */}
@@ -894,28 +932,8 @@ const Evenements = () => {
                 Sélectionnez une date pour voir les événements
               </Text>
             </View>
+            {expandableCalendar()}
           </View>
-          <ExpandableCalendar
-            firstDay={1}
-            minDate={minLimitDate}
-            maxDate={maxLimitDate}
-            markedDates={getMarkedDates()}
-            theme={calendarTheme}
-            initialPosition={calendarOpen ? 'open' : 'closed'}
-            onCalendarToggled={handleCalendarStateChange}
-            hideKnob={false}
-            closeOnDayPress={false}
-            onDayPress={day => {
-              console.log('Jour sélectionné:', day.dateString);
-              setSelectedDate(day.dateString);
-            }}
-            style={styles.calendar}
-            pastScrollRange={12}
-            futureScrollRange={12}
-            allowSelectionOutOfRange={false}
-            disableMonthChange={false}
-            animateScroll={true}
-          />
 
           {/* Filtres rapides */}
           {renderFilters()}

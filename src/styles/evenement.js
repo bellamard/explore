@@ -75,6 +75,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     minHeight: Platform.OS === 'ios' ? 120 : 110,
   },
+  calendarLoading: {
+    height: Platform.OS === 'ios' ? 120 : 110,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   todayButton: {
     backgroundColor: '#4A6FA5',
     borderRadius: 20,
