@@ -20,6 +20,7 @@ import { Colors } from '../styles/logement';
 import StylesPublie from '../styles/publie';
 import * as ImagePicker from 'react-native-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const typesPublication = [
   { id: 1, typeName: 'Logements', icone: 'bed' },
@@ -76,12 +77,26 @@ const Publie = ({ params }) => {
   const [typeLogementList, setTypeLogementList] = useState([]);
   const [typeSite, setTypeSite] = useState([]);
   const [typeBilleterie, setTypeBilleterie] = useState([]);
+  const [typeEvenement, setTypeEvenement] = useState([]);
+  const [typePayement, setTypePayement] = useState([]);
+  const [showDateStart, setShowDateStart] = useState(false);
+  const [showDateEnd, setShowDateEnd] = useState(false);
 
   useEffect(() => {
     // Initial data fetch or setup can be done here
     setTypeLogementList(['Appartement', 'Maison', 'Studio']);
     setTypeSite(['Parc', 'Monument', 'Musée']);
     setTypeBilleterie(['Gratuit', 'Payant', 'reservé']);
+    setTypeEvenement([
+      'Concert',
+      'Exposition',
+      'Festival',
+      'Conférence',
+      'Atelier',
+      'Spectacle',
+      'Excursion',
+    ]);
+    setTypePayement(['Carte Bancaire', 'Mobile Money']);
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -282,20 +297,280 @@ const Publie = ({ params }) => {
     if (selectedType == 'Événements') {
       return (
         <View>
-          <Text>Page Événements</Text>
+          <View>
+            <Text>TYpe d'Événement</Text>
+            <FlatList
+              data={typeEvenement}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={StylesPublie.billeterieCard}
+                  onPress={() => {
+                    setDataPublie({ ...dataPublie, typeEvenement: item });
+                  }}
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+          <View style={StylesPublie.divider} />
+          <View>
+            <Text>Lieu de l'Événement</Text>
+            <TextInput
+              placeholder="Lieu de l'Événement"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: { ...dataPublie.lieu, avenue: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Commune"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: { ...dataPublie.lieu, commune: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Ville"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: { ...dataPublie.lieu, ville: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Province"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: {
+                    ...dataPublie.lieu,
+                    province: text,
+                  },
+                })
+              }
+            />
+          </View>
+          <View style={StylesPublie.divider} />
+          <View>
+            <Text>Date</Text>
+            {showDateStart ? (
+              <DateTimePicker
+                value={dataPublie.dateStart || new Date()}
+                mode="datetime"
+                onChange={(event, selectedDate) => {
+                  setShowDateStart(false);
+                  setDataPublie({
+                    ...dataPublie,
+                    dateStart: selectedDate,
+                  });
+                }}
+              />
+            ) : (
+              <TouchableOpacity onPress={() => setShowDateStart(true)}>
+                <Text>
+                  {dataPublie.dateStart == null
+                    ? 'Choisir la date de début'
+                    : dataPublie.dateStart.toLocaleString()}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {showDateEnd ? (
+              <DateTimePicker
+                value={dataPublie.dateEnd || new Date()}
+                mode="datetime"
+                onChange={(event, selectedDate) => {
+                  setShowDateEnd(false);
+                  setDataPublie({
+                    ...dataPublie,
+                    dateEnd: selectedDate,
+                  });
+                }}
+              />
+            ) : (
+              <TouchableOpacity onPress={() => setShowDateEnd(true)}>
+                <Text>
+                  {dataPublie.dateEnd == null
+                    ? 'Choisir la date de fin'
+                    : dataPublie.dateEnd.toLocaleString()}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       );
     }
     if (selectedType == 'Sites') {
       return (
         <View>
-          <Text>Page Sites</Text>
+          <View>
+            <Text>Type de Site</Text>
+            <FlatList
+              data={typeSite}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={StylesPublie.billeterieCard}
+                  onPress={() => {
+                    setDataPublie({ ...dataPublie, typeSite: item });
+                  }}
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <Text>Nombre de Participants</Text>
+            <TextInput
+              placeholder="Nombre de Participants"
+              style={StylesPublie.input}
+              keyboardType="numeric"
+              onChangeText={text =>
+                setDataPublie({ ...dataPublie, nombreParticipants: text })
+              }
+            />
+          </View>
+          <View style={StylesPublie.divider} />
+          <View>
+            <Text>Adresse du Site</Text>
+            <TextInput
+              placeholder="Lieu du site"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: { ...dataPublie.lieu, avenue: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Commune"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: { ...dataPublie.lieu, commune: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Ville"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: { ...dataPublie.lieu, ville: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Province"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  lieu: {
+                    ...dataPublie.lieu,
+                    province: text,
+                  },
+                })
+              }
+            />
+          </View>
+          <View style={StylesPublie.divider} />
+          <View>
+            <Text>Date</Text>
+            {showDateStart ? (
+              <DateTimePicker
+                value={dataPublie.dateStart || new Date()}
+                mode="datetime"
+                onChange={(event, selectedDate) => {
+                  setShowDateStart(false);
+                  setDataPublie({
+                    ...dataPublie,
+                    dateStart: selectedDate,
+                  });
+                }}
+              />
+            ) : (
+              <TouchableOpacity onPress={() => setShowDateStart(true)}>
+                <Text>
+                  {dataPublie.dateStart == null
+                    ? 'Choisir la date de début'
+                    : dataPublie.dateStart.toLocaleString()}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {showDateEnd ? (
+              <DateTimePicker
+                value={dataPublie.dateEnd || new Date()}
+                mode="datetime"
+                onChange={(event, selectedDate) => {
+                  setShowDateEnd(false);
+                  setDataPublie({
+                    ...dataPublie,
+                    dateEnd: selectedDate,
+                  });
+                }}
+              />
+            ) : (
+              <TouchableOpacity onPress={() => setShowDateEnd(true)}>
+                <Text>
+                  {dataPublie.dateEnd == null
+                    ? 'Choisir la date de fin'
+                    : dataPublie.dateEnd.toLocaleString()}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       );
     }
   };
 
-  const billeteriepage = () => {};
+  const billeteriepage = () => {
+    if (dataPublie.typeBilleterie === 'Gratuit') {
+      return (
+        <View>
+          <Text>Cet événement est gratuit pour tous les participants.</Text>
+        </View>
+      );
+    }
+    if (dataPublie.typeBilleterie === 'Payant') {
+      return (
+        <View>
+          <View>
+            <Text>Type de paiement</Text>
+            <FlatList
+              data={typePayement}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    setDataPublie({
+                      ...dataPublie,
+                      typePayement: item,
+                    })
+                  }
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              )}
+              horizontal
+              contentContainerStyle={StylesPublie.billeterieListContainer}
+            />
+          </View>
+          <
+        </View>
+      );
+    }
+  };
 
   const apercuspage = () => {};
 
