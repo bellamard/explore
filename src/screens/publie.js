@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Colors } from '../styles/logement';
 import StylesPublie from '../styles/publie';
 import * as ImagePicker from 'react-native-image-picker';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const typesPublication = [
   { id: 1, typeName: 'Logements', icone: 'bed' },
@@ -52,6 +53,17 @@ const imageView = ({ item, onDeleteImage }) => {
   );
 };
 
+const cardBilleterie = ({ type, onBill }) => (
+  <TouchableOpacity
+    style={StylesPublie.billeterieCard}
+    onPress={() => {
+      onBill(type.typeName);
+    }}
+  >
+    <Text>{type.typeName}</Text>
+  </TouchableOpacity>
+);
+
 const Publie = ({ params }) => {
   const [listImages, setListImages] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -63,9 +75,13 @@ const Publie = ({ params }) => {
   const [namePage, setNamePage] = useState('');
   const [typeLogementList, setTypeLogementList] = useState([]);
   const [typeSite, setTypeSite] = useState([]);
+  const [typeBilleterie, setTypeBilleterie] = useState([]);
 
   useEffect(() => {
     // Initial data fetch or setup can be done here
+    setTypeLogementList(['Appartement', 'Maison', 'Studio']);
+    setTypeSite(['Parc', 'Monument', 'Musée']);
+    setTypeBilleterie(['Gratuit', 'Payant', 'reservé']);
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -156,13 +172,126 @@ const Publie = ({ params }) => {
 
   const typepage = () => {
     if (selectedType == 'Logements') {
-      return <Text>Page Logements</Text>;
+      return (
+        <View>
+          <View>
+            <Text>Type de Logements</Text>
+            <SelectDropdown
+              data={typeLogementList}
+              onSelect={selectedItem => {
+                setDataPublie({ ...dataPublie, typeLogement: selectedItem });
+              }}
+              defaultButtonText="Sélectionnez un type de logement"
+              buttonStyle={StylesPublie.dropdownBtn}
+              buttonTextStyle={StylesPublie.dropdownBtnText}
+            />
+            <View>
+              <TextInput
+                placeholder="Nombre de Pièces"
+                style={StylesPublie.input}
+                keyboardType="numeric"
+                onChangeText={text =>
+                  setDataPublie({ ...dataPublie, nombreChambres: text })
+                }
+              />
+            </View>
+          </View>
+          <View style={StylesPublie.divider} />
+          <View>
+            <Text>Type de Séjour</Text>
+            <SelectDropdown
+              data={['Nuit', 'Semaine', 'Mois']}
+              onSelect={selectedItem => {
+                setDataPublie({ ...dataPublie, typeSejour: selectedItem });
+              }}
+              defaultButtonText="Sejour"
+              buttonStyle={StylesPublie.dropdownBtn}
+              buttonTextStyle={StylesPublie.dropdownBtnText}
+            />
+            <TextInput
+              placeholder="Prix"
+              style={StylesPublie.input}
+              keyboardType="numeric"
+              onChangeText={text =>
+                setDataPublie({ ...dataPublie, prixNuit: text })
+              }
+            />
+          </View>
+          <View style={StylesPublie.divider} />
+          <View>
+            <Text>Adresse du Logement</Text>
+            <TextInput
+              placeholder="Numéro et Rue"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  adresse: { ...dataPublie.adresse, avenue: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Commune"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  adresse: { ...dataPublie.adresse, commune: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Ville"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  adresse: { ...dataPublie.adresse, ville: text },
+                })
+              }
+            />
+            <TextInput
+              placeholder="Province"
+              style={StylesPublie.input}
+              onChangeText={text =>
+                setDataPublie({
+                  ...dataPublie,
+                  adresse: { ...dataPublie.adresse, province: text },
+                })
+              }
+            />
+          </View>
+          <View style={StylesPublie.divider} />
+          <FlatList
+            data={typeBilleterie}
+            renderItem={({ item }) => (
+              <cardBilleterie
+                type={item}
+                onBill={type => {
+                  setDataPublie({ ...dataPublie, typeBilleterie: type });
+                }}
+              />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal
+            contentContainerStyle={StylesPublie.billeterieListContainer}
+          />
+        </View>
+      );
     }
     if (selectedType == 'Événements') {
-      return <Text>Page Événements</Text>;
+      return (
+        <View>
+          <Text>Page Événements</Text>
+        </View>
+      );
     }
     if (selectedType == 'Sites') {
-      return <Text>Page Sites</Text>;
+      return (
+        <View>
+          <Text>Page Sites</Text>
+        </View>
+      );
     }
   };
 
@@ -184,7 +313,6 @@ const Publie = ({ params }) => {
         return homepage();
     }
   };
-  
 
   return (
     <SafeAreaView style={StylesPublie.container}>
@@ -195,7 +323,12 @@ const Publie = ({ params }) => {
         </View>
         <View style={StylesPublie.content}>
           {gestionPage()}
-          <TouchableOpacity style={StylesPublie.pageIndicator} onPress={}>
+          <TouchableOpacity
+            style={StylesPublie.pageIndicator}
+            onPress={() => {
+              console.log(namePage);
+            }}
+          >
             <Text>{namePage}</Text>
           </TouchableOpacity>
         </View>
