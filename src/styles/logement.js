@@ -139,6 +139,251 @@ export const Shadows = {
   },
 };
 
+// --- ESPACEMENTS ---
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  '2xl': 40,
+  '3xl': 48,
+  screen: {
+    horizontal: 20,
+    vertical: 16,
+  },
+  section: {
+    vertical: 24,
+  },
+  card: {
+    padding: 16,
+    margin: 12,
+  },
+};
+
+// --- STYLES UTILITAIRES ---
+export const UtilityStyles = StyleSheet.create({
+  // Flex Utilities
+  flex: { flex: 1 },
+  flexRow: { flexDirection: 'row' },
+  flexColumn: { flexDirection: 'column' },
+  flexWrap: { flexWrap: 'wrap' },
+  flexNoWrap: { flexWrap: 'nowrap' },
+
+  // Alignment
+  itemsCenter: { alignItems: 'center' },
+  itemsStart: { alignItems: 'flex-start' },
+  itemsEnd: { alignItems: 'flex-end' },
+  itemsStretch: { alignItems: 'stretch' },
+  justifyCenter: { justifyContent: 'center' },
+  justifyStart: { justifyContent: 'flex-start' },
+  justifyEnd: { justifyContent: 'flex-end' },
+  justifyBetween: { justifyContent: 'space-between' },
+  justifyAround: { justifyContent: 'space-around' },
+
+  // Spacing
+  gapXs: { gap: Spacing.xs },
+  gapSm: { gap: Spacing.sm },
+  gapMd: { gap: Spacing.md },
+  gapLg: { gap: Spacing.lg },
+  gapXl: { gap: Spacing.xl },
+
+  // Margins
+  mXs: { margin: Spacing.xs },
+  mSm: { margin: Spacing.sm },
+  mMd: { margin: Spacing.md },
+  mLg: { margin: Spacing.lg },
+  mXl: { margin: Spacing.xl },
+
+  mtXs: { marginTop: Spacing.xs },
+  mtSm: { marginTop: Spacing.sm },
+  mtMd: { marginTop: Spacing.md },
+  mtLg: { marginTop: Spacing.lg },
+  mtXl: { marginTop: Spacing.xl },
+
+  mbXs: { marginBottom: Spacing.xs },
+  mbSm: { marginBottom: Spacing.sm },
+  mbMd: { marginBottom: Spacing.md },
+  mbLg: { marginBottom: Spacing.lg },
+  mbXl: { marginBottom: Spacing.xl },
+
+  mlXs: { marginLeft: Spacing.xs },
+  mlSm: { marginLeft: Spacing.sm },
+  mlMd: { marginLeft: Spacing.md },
+  mlLg: { marginLeft: Spacing.lg },
+  mlXl: { marginLeft: Spacing.xl },
+
+  mrXs: { marginRight: Spacing.xs },
+  mrSm: { marginRight: Spacing.sm },
+  mrMd: { marginRight: Spacing.md },
+  mrLg: { marginRight: Spacing.lg },
+  mrXl: { marginRight: Spacing.xl },
+
+  mxXs: { marginHorizontal: Spacing.xs },
+  mxSm: { marginHorizontal: Spacing.sm },
+  mxMd: { marginHorizontal: Spacing.md },
+  mxLg: { marginHorizontal: Spacing.lg },
+  mxXl: { marginHorizontal: Spacing.xl },
+
+  myXs: { marginVertical: Spacing.xs },
+  mySm: { marginVertical: Spacing.sm },
+  myMd: { marginVertical: Spacing.md },
+  myLg: { marginVertical: Spacing.lg },
+  myXl: { marginVertical: Spacing.xl },
+
+  // Paddings
+  pXs: { padding: Spacing.xs },
+  pSm: { padding: Spacing.sm },
+  pMd: { padding: Spacing.md },
+  pLg: { padding: Spacing.lg },
+  pXl: { padding: Spacing.xl },
+
+  ptXs: { paddingTop: Spacing.xs },
+  ptSm: { paddingTop: Spacing.sm },
+  ptMd: { paddingTop: Spacing.md },
+  ptLg: { paddingTop: Spacing.lg },
+  ptXl: { paddingTop: Spacing.xl },
+
+  pbXs: { paddingBottom: Spacing.xs },
+  pbSm: { paddingBottom: Spacing.sm },
+  pbMd: { paddingBottom: Spacing.md },
+  pbLg: { paddingBottom: Spacing.lg },
+  pbXl: { paddingBottom: Spacing.xl },
+
+  plXs: { paddingLeft: Spacing.xs },
+  plSm: { paddingLeft: Spacing.sm },
+  plMd: { paddingLeft: Spacing.md },
+  plLg: { paddingLeft: Spacing.lg },
+  plXl: { paddingLeft: Spacing.xl },
+
+  prXs: { paddingRight: Spacing.xs },
+  prSm: { paddingRight: Spacing.sm },
+  prMd: { paddingRight: Spacing.md },
+  prLg: { paddingRight: Spacing.lg },
+  prXl: { paddingRight: Spacing.xl },
+
+  pxXs: { paddingHorizontal: Spacing.xs },
+  pxSm: { paddingHorizontal: Spacing.sm },
+  pxMd: { paddingHorizontal: Spacing.md },
+  pxLg: { paddingHorizontal: Spacing.lg },
+  pxXl: { paddingHorizontal: Spacing.xl },
+
+  pyXs: { paddingVertical: Spacing.xs },
+  pySm: { paddingVertical: Spacing.sm },
+  pyMd: { paddingVertical: Spacing.md },
+  pyLg: { paddingVertical: Spacing.lg },
+  pyXl: { paddingVertical: Spacing.xl },
+
+  // Text Alignment
+  textCenter: { textAlign: 'center' },
+  textLeft: { textAlign: 'left' },
+  textRight: { textAlign: 'right' },
+  textJustify: { textAlign: 'justify' },
+
+  // Text Styles
+  textXs: { ...Typography.caption },
+  textSm: { ...Typography.bodySmall },
+  textMd: { ...Typography.body },
+  textLg: { ...Typography.bodyLarge },
+  textXl: { ...Typography.h4 },
+  text2Xl: { ...Typography.h3 },
+  text3Xl: { ...Typography.h2 },
+  text4Xl: { ...Typography.h1 },
+
+  textLight: { color: Colors.textLight },
+  textSecondary: { color: Colors.textSecondary },
+  textPrimary: { color: Colors.textPrimary },
+  textDark: { color: Colors.textDark },
+  textWhite: { color: Colors.white },
+  textPrimaryColor: { color: Colors.primary },
+  textSuccess: { color: Colors.success },
+  textError: { color: Colors.error },
+  textWarning: { color: Colors.warning },
+  textInfo: { color: Colors.info },
+
+  fontWeightNormal: { fontWeight: '400' },
+  fontWeightMedium: { fontWeight: '500' },
+  fontWeightSemibold: { fontWeight: '600' },
+  fontWeightBold: { fontWeight: '700' },
+  fontWeightBlack: { fontWeight: '900' },
+
+  // Borders
+  border: { borderWidth: 1, borderColor: Colors.border },
+  borderLight: { borderWidth: 1, borderColor: Colors.borderLight },
+  borderDark: { borderWidth: 1, borderColor: Colors.borderDark },
+  borderPrimary: { borderWidth: 1, borderColor: Colors.primary },
+  borderError: { borderWidth: 1, borderColor: Colors.error },
+
+  borderTop: { borderTopWidth: 1, borderTopColor: Colors.borderLight },
+  borderBottom: { borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
+  borderLeft: { borderLeftWidth: 1, borderLeftColor: Colors.borderLight },
+  borderRight: { borderRightWidth: 1, borderRightColor: Colors.borderLight },
+
+  // Border Radius
+  roundedXs: { borderRadius: BorderRadius.xs },
+  roundedSm: { borderRadius: BorderRadius.sm },
+  roundedMd: { borderRadius: BorderRadius.md },
+  roundedLg: { borderRadius: BorderRadius.lg },
+  roundedXl: { borderRadius: BorderRadius.xl },
+  rounded2Xl: { borderRadius: BorderRadius['2xl'] },
+  rounded3Xl: { borderRadius: BorderRadius['3xl'] },
+  roundedFull: { borderRadius: BorderRadius.round },
+
+  // Backgrounds
+  bgTransparent: { backgroundColor: 'transparent' },
+  bgWhite: { backgroundColor: Colors.white },
+  bgSurface: { backgroundColor: Colors.surface },
+  bgBackground: { backgroundColor: Colors.background },
+  bgPrimary: { backgroundColor: Colors.primary },
+  bgPrimaryLight: { backgroundColor: Colors.primaryLight },
+  bgSecondary: { backgroundColor: Colors.secondary },
+  bgSuccess: { backgroundColor: Colors.success },
+  bgError: { backgroundColor: Colors.error },
+  bgWarning: { backgroundColor: Colors.warning },
+  bgInfo: { backgroundColor: Colors.info },
+
+  // Shadows
+  shadowNone: { ...Shadows.none },
+  shadowSubtle: { ...Shadows.subtle },
+  shadowSmall: { ...Shadows.small },
+  shadowMedium: { ...Shadows.medium },
+  shadowLarge: { ...Shadows.large },
+  shadowXlarge: { ...Shadows.xlarge },
+  shadowCard: { ...Shadows.card },
+  shadowButton: { ...Shadows.button },
+
+  // Dimensions
+  wFull: { width: '100%' },
+  hFull: { height: '100%' },
+  wScreen: { width: width },
+  hScreen: { height: height },
+
+  // Positioning
+  absolute: { position: 'absolute' },
+  relative: { position: 'relative' },
+  top0: { top: 0 },
+  bottom0: { bottom: 0 },
+  left0: { left: 0 },
+  right0: { right: 0 },
+  inset0: { top: 0, bottom: 0, left: 0, right: 0 },
+
+  // Opacity
+  opacity0: { opacity: 0 },
+  opacity25: { opacity: 0.25 },
+  opacity50: { opacity: 0.5 },
+  opacity75: { opacity: 0.75 },
+  opacity100: { opacity: 1 },
+
+  // Z-Index
+  z0: { zIndex: 0 },
+  z10: { zIndex: 10 },
+  z20: { zIndex: 20 },
+  z30: { zIndex: 30 },
+  z40: { zIndex: 40 },
+  z50: { zIndex: 50 },
+  zAuto: { zIndex: 'auto' },
+});
+
 // --- STYLES COMPOSANTS PRINCIPAUX ---
 export const StylesLogement = StyleSheet.create({
   container: {
